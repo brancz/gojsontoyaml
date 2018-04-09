@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"log"
 	"os"
@@ -9,6 +10,9 @@ import (
 )
 
 func main() {
+	yamltojson := flag.Bool("yamltojson", false, "Convert yaml to json instead of the default json to yaml.")
+	flag.Parse()
+
 	fi, err := os.Stdin.Stat()
 	if err != nil {
 		log.Fatal(err)
@@ -17,15 +21,23 @@ func main() {
 		log.Fatal("no data to read from stdin")
 	}
 
-	jsonBytes, err := ioutil.ReadAll(os.Stdin)
+	inBytes, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	yamlBytes, err := yaml.JSONToYAML(jsonBytes)
-	if err != nil {
-		log.Fatal(err)
+	var outBytes []byte
+	if *yamltojson {
+		outBytes, err = yaml.YAMLToJSON(inBytes)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		outBytes, err = yaml.JSONToYAML(inBytes)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	os.Stdout.Write(yamlBytes)
+	os.Stdout.Write(outBytes)
 }
