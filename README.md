@@ -7,7 +7,7 @@ This is a small tool written in go to convert json to yaml reading from STDIN an
 To install simply
 
 ```
-go get github.com/brancz/gojsontoyaml
+go install github.com/brancz/gojsontoyaml@latest
 ```
 
 ## Usage
